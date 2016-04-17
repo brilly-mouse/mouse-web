@@ -137,7 +137,7 @@
                     var effective_height = total_height - handle_height;
 
                     var linear_vel = -(y / (effective_height / 2));
-                    var angular_vel  = (x / (effective_height / 2)) / 5;
+                    var angular_vel  = (x / (effective_height / 2)) * 2;
 
                     twistMessage = new ROSLIB.Message({
                         linear: {x: linear_vel, y: 0, z: 0},
