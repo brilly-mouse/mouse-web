@@ -127,7 +127,8 @@
         $(function() {
             ros.connect('ws://' + window.location.hostname + ':9090');
             setInterval(function() {
-                if(!$('.joystick_disabled').length){
+                var twistMessage;
+                if(!$('.joystick_disabled').length) {
                     var total_height = $('.joystick_wrapper').height();
                     var handle_height = $('.joystick_handle').height();
                     var x = parseInt($('.joystick_handle').css('left'));
@@ -138,13 +139,17 @@
                     var linear_vel = -(y / (effective_height / 2));
                     var angular_vel  = (x / (effective_height / 2)) / 5;
 
-                    var twistMessage = new ROSLIB.Message({
+                    twistMessage = new ROSLIB.Message({
                         linear: {x: linear_vel, y: 0, z: 0},
                         angular: {x: 0, y: 0, z: angular_vel}
                     });
-
-                    cmdTopic.publish(twistMessage);
+                } else {
+                    twistMessage = new ROSLIB.Message({
+                        linear: {x: 0, y: 0, z: 0},
+                        angular: {x: 0, y: 0, z: 0}
+                    });
                 }
+                cmdTopic.publish(twistMessage);
             }, 100);
         });
     </script>
