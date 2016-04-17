@@ -3,7 +3,7 @@
 }
 
 body{
-    background-color: #f70;
+    background-color: #222;
 }
 
 .vc{
@@ -15,7 +15,7 @@ body{
 
 button{
     background-color: #fff;
-    color: #f70;
+    color: #222;
     padding: 1em;
     margin-top: 2em;
     border: 0;
@@ -63,7 +63,7 @@ button:focus{
     transition-duration: 0.3s;
 }
 .joystick_disabled .joystick_handle{
-    border: 0.25em solid #f70;
+    border: 0.25em solid #222;
     width: 14.5em;
     height: 14.5em;
 }
@@ -90,7 +90,7 @@ button:focus{
     height: 20em;
     margin-left: -10em;
     margin-top: -10em;
-    background-color: #f70;
+    background-color: #222;
     border-radius: 50%;
     position: absolute;
     z-index: 1;
@@ -98,7 +98,7 @@ button:focus{
 }
 
 .joystick_disabled .joystick_indicator{
-    background-color: #f70;
+    background-color: #222;
     height: 15em;
     width: 22.5em;
     margin-top: -7.5em;
@@ -108,7 +108,7 @@ button:focus{
 
 .joystick_label{
     font-family: sans-serif;
-    color: #f70;
+    color: #222;
     line-height: 0;
     font-size: 3em;
     position: absolute;
