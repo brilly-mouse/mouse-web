@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MM - Teleop Joystick</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> <script src="./lib/eventemitter2.min.js"></script> <script src="./lib/jquery-2.2.0.min.js"></script>
+    <script src="./lib/roslib.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+</head>
+
+<body>
+    <div id="debug_msg"></div>
+    <div class="vc">
+        Left Duty: <input type="text" id="left_duty" /><br />
+        Right Duty: <input type="text" id="right_duty" /><br />
+        <button type="submit" id="duty_pub">Publish duty cycles</button><br />
+        <br />
+        <br />
+        Left wheel is running @ <span id="left_state">0</span> rad/sec<br />
+        Right wheel is running @ <span id="right_state">0</span> rad/sec<br />
+        We're rolling at <span id="linear_state">0</span> m/sec<br />
+        We're spinning at <span id="angular_state">0</span> rad/sec<br />
+
+    </div>
+    <script>
+        var ros = new ROSLIB.Ros();
+
+        ros.on('connection', function() {
+            $('#debug_msg').text('Connected');
+        });
+        ros.on('error', function(error) {
+            $('#debug_msg').text('Error: ' + error);
+        });
+        ros.on('close', function() {
+            $('#debug_msg').text('Not connected');
+        });
+
+        var rightDutyPub = new ROSLIB.Topic({
+            ros: ros,
+            name: '/wheel_right/duty',
+            messageType: 'std_msgs/Int16',
+            queue_size: 1
+        });
+
+        var leftDutyPub = new ROSLIB.Topic({
+            ros: ros,
+            name: '/wheel_left/duty',
+            messageType: 'std_msgs/Int16',
+            queue_size: 1
+        });
+
+        $('#duty_pub').click(function(){
+            var left_duty = new ROSLIB.Message({
+                data: parseInt($('#left_duty').val(), 10)
+            });
+            var right_duty = new ROSLIB.Message({
+                data: parseInt($('#right_duty').val(), 10)
+            });
+            console.log(leftDutyPub.publish(left_duty));
+            rightDutyPub.publish(right_duty);
+            console.log("stuff");
+        });
+
+        (new ROSLIB.Topic({
+            ros: ros,
+            name: '/wheel_right/state',
+            messageType: 'std_msgs/Float32',
+            throttle_rate: 500
+        })).subscribe(function(data) {
+            $('#right_state').text(data.data);
+        });
+
+        (new ROSLIB.Topic({
+            ros: ros,
+            name: '/wheel_left/state',
+            messageType: 'std_msgs/Float32',
+            throttle_rate: 500
+        })).subscribe(function(data) {
+            $('#left_state').text(data.data); 
+        });
+
+        (new ROSLIB.Topic({
+            ros: ros,
+            name: '/twist',
+            messageType: 'geometry_msgs/Twist',
+            throttle_rate: 500
+        })).subscribe(function(data) {
+            $('#linear_state').text(data.linear.x); 
+            $('#angular_state').text(data.angular.z); 
+        });
+        $(function() {
+            ros.connect('ws://' + window.location.hostname + ':9090');
+        });
+    </script>
+</body>
+
+</html>

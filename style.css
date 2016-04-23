@@ -1,4 +1,5 @@
-* {
+*{
+    box-sizing: content-box;
     margin: 0;
     padding: 0;
 }
@@ -10,8 +11,34 @@ html, body {
 }
 
 body {
+    line-height: 1.8em;
     border-top: 1em solid #444;
+    background-color: #222;
+    color: #fff;
     box-sizing: border-box;
+}
+
+.vc{
+    text-align: center;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+button{
+    background-color: #fff;
+    color: #222;
+    padding: 1em;
+    margin-top: 2em;
+    border: 0;
+}
+
+button:hover{
+    opacity: 0.8;
+}
+
+button:focus{
+    opacity: 0.9;
 }
 
 #debug_msg {

@@ -2,9 +2,7 @@
 <html>
 <head>
     <title>MM - Teleop Joystick</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <script src="./lib/eventemitter2.min.js"></script>
-    <script src="./lib/jquery-2.2.0.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> <script src="./lib/eventemitter2.min.js"></script> <script src="./lib/jquery-2.2.0.min.js"></script>
     <script src="./lib/roslib.min.js"></script>
     <script type='text/javascript'>
         var joystickTimeout;
@@ -45,6 +43,15 @@
                     var joyX = event.pageX - centerX;
                     var joyY = event.pageY - centerY;
                 }
+
+                /*
+                if (Math.abs(joyX) > Math.abs(joyY)) {
+                    joyY = 0;
+                } else {
+                    joyX = 0;
+                }
+                */
+
                 var joystick = $(this).find('.joystick_handle');
                 //constrain the joystick's movements
                 var distance = Math.sqrt(Math.pow(joyX, 2) + Math.pow(joyY, 2));
@@ -136,8 +143,8 @@
 
                     var effective_height = total_height - handle_height;
 
-                    var linear_vel = -(y / (effective_height / 2));
-                    var angular_vel  = (x / (effective_height / 2)) * 2;
+                    var linear_vel = 0; // -(y / (effective_height / 2)) / 2;
+                    var angular_vel  = -(x / (effective_height / 2)) * 17.5;
 
                     twistMessage = new ROSLIB.Message({
                         linear: {x: linear_vel, y: 0, z: 0},
