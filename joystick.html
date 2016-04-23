@@ -13,8 +13,7 @@
             });
 
             $('.joystick_wrapper').on('touchend mouseup mouseleave', function(){
-                resetJoystickTimeout();
-                var wrapper = $(this);
+                resetJoystickTimeout(); var wrapper = $(this);
                 wrapper.removeClass('joystick_dragging');
                 var joystick = $(this).find('.joystick_handle');
                 if(wrapper.is('.joystick_disabled')){
@@ -131,6 +130,15 @@
             messageType: 'geometry_msgs/Twist'
         });
 
+        var linear_accel = 1000; // 0.2; //m/sec
+        var angular_accel = 1000;// 5; //rad/sec
+
+        var linear_vel = 0;
+        var angular_vel = 0;
+
+        var min_angular_vel = 1
+        var min_linear_vel = 0.08;
+
         $(function() {
             ros.connect('ws://' + window.location.hostname + ':9090');
             setInterval(function() {
@@ -143,8 +151,44 @@
 
                     var effective_height = total_height - handle_height;
 
-                    var linear_vel = 0; // -(y / (effective_height / 2)) / 2;
-                    var angular_vel  = -(x / (effective_height / 2)) * 17.5;
+                    var target_linear_vel = -(y / (effective_height / 2)) * (0.93);
+                    var target_angular_vel = -(x / (effective_height / 2)) * (17.5 / 5);
+
+                    if (Math.abs(target_angular_vel) < min_angular_vel) {
+                        target_angular_vel = 0;
+                    }
+
+                    if (Math.abs(target_linear_vel) < min_linear_vel) {
+                        target_linear_vel = 0;
+                    }
+
+                    /*
+                    l_sign = target_linear_vel && target_linear_vel / Math.abs(target_linear_vel);
+                    a_sign = target_angular_vel && target_angular_vel / Math.abs(target_angular_vel);
+
+                    target_linear_vel += l_sign * min_linear_vel;
+                    target_angular_vel += a_sign * min_angular_vel;
+                    */
+
+                    if (target_linear_vel > linear_vel) {
+                        linear_vel += linear_accel;
+                    }
+                    if (target_linear_vel < linear_vel) {
+                        linear_vel -= linear_accel;
+                    }
+                    if (Math.abs(linear_vel - target_linear_vel) < linear_accel) {
+                        linear_vel = target_linear_vel;
+                    }
+
+                    if (target_angular_vel > angular_vel) {
+                        angular_vel += angular_accel;
+                    }
+                    if (target_angular_vel < angular_vel) {
+                        angular_vel -= angular_accel;
+                    }
+                    if (Math.abs(angular_vel - target_angular_vel) < angular_accel) {
+                        angular_vel = target_angular_vel;
+                    }
 
                     twistMessage = new ROSLIB.Message({
                         linear: {x: linear_vel, y: 0, z: 0},
